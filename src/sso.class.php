@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 namespace CIVA\SSO;
 
@@ -8,7 +7,7 @@ class SSO
     protected $config;
     private $apiKey;
     private $apiSecret;
-    protected $cipher;
+    protected $cipher; 
     private $passphrase;
     protected $error;
     protected $warning;
