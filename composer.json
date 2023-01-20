@@ -2,7 +2,6 @@
     "name": "civa/one-account",
     "description": "CIVA Single Sign On Package",
     "type": "library",
-    "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
             "Civa\\OneAccount\\": "src/"
@@ -14,5 +13,11 @@
             "email": "razeek@civa.tech"
         }
     ],
-    "require": {}
+    "support": {
+        "issues": "https://github.com/rzksbr-civa/civa-one-account/issues",
+        "source": "https://github.com/rzksbr-civa/civa-one-account"
+    },
+    "require": {
+        "php": ">=7.3.0"
+    }
 }
