@@ -1,0 +1,18 @@
+{
+    "name": "civa/one-account",
+    "description": "CIVA Single Sign On Package",
+    "type": "library",
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "Civa\\OneAccount\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "rzksbr-civa",
+            "email": "razeek@civa.tech"
+        }
+    ],
+    "require": {}
+}
