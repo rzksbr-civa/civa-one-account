@@ -1,6 +1,6 @@
 <?php
 
-namespace CIVA\SSO;
+namespace Civa\OneAccount;
 
 class SSO
 {
