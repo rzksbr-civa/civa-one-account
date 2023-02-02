@@ -2,16 +2,16 @@
 
 namespace Civa\OneAccount;
 
-class SSO
+class SingleSignOn
 {
     protected $config;
     private $apiKey;
     private $apiSecret;
-    protected $cipher; 
+    protected $cipher;
     private $passphrase;
     protected $error;
     protected $warning;
-
+    
     public function __construct($apiKey, $secret, $config = [])
     {
         $this->apiKey = $apiKey;
@@ -46,7 +46,7 @@ class SSO
         $url = "https://accounts.civa.tech/{$uri}/?" . http_build_query($params);
 
         $meta = json_encode([
-            'refresh_token' => $_COOKIE['SSO_REFRESH_TOKEN'] ?? null,
+            'refresh_token' => $_SESSION['SSO_REFRESH_TOKEN'] ?? null,
         ]);
 
         $defaultPost = [
@@ -87,7 +87,7 @@ class SSO
             try{
                 $response = json_decode($response);
                 if ($response->refresh_token) {
-                    setcookie('SSO_REFRESH_TOKEN', $response->refresh_token, strtotime('+1day'));
+                    $_SESSION['SSO_REFRESH_TOKEN'] = $response->refresh_token;
                 }
                 if(isset($response->data)){
                     $dec_data = $this->decrypt($response->data);
@@ -170,14 +170,20 @@ class SSO
 
     public function emit($event, array $data)
     {
-        if (in_array($event, ['user.created', 'user.removed'])) {
+        $events = [
+            'user.created' ,
+            'user.removed',
+            'user.updated',
+            'profile.updated',
+        ];
+        if (in_array($event, $events)) {
             $params['tok'] = $this->encrypt($this->passphrase . '|' . time());
             $params['key'] = $this->apiKey;
             $params['ts'] = time();
             $event = base64_encode($event);
             return $this->request("webhook/{$event}", $params, $data);
         } else {
-            throw new \Exception('Invalid event');
+            throw new \Exception('Invalid event - '.$event);
         }
     }
 
@@ -209,7 +215,13 @@ class SSO
     {
         try {
             $event = $_GET['event'] ?? false;
-            if (!$event) {
+            $events = [
+                'user.created' ,
+                'user.removed',
+                'user.updated',
+                'profile.updated',
+            ];
+            if (!($event && in_array($event, $events))) {
                 return false;
             }
             if ($data = $this->validateRequest()) {
